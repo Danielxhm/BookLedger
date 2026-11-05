@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        scrollbar-gutter: stable;
+    }
+
+    body {
+        font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        font-size-adjust: from-font;
+        line-height: 1.5;
+    }
+}
+
+@view-transition {
+    navigation: auto;
+}
+
+@keyframes pageFadeIn {
+    from {
+        opacity: 0.92;
+        transform: translateY(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+main {
+    animation: pageFadeIn 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[x-cloak] {
+    display: none;
+}
+
+.visually-hidden {
+    position: absolute;
+    clip-path: inset(50%);
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    white-space: nowrap;
+}
