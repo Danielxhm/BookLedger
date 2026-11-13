@@ -78,4 +78,9 @@ class Socio extends Authenticatable
                 });
         })->count();
     }
+
+    public function favoritos()
+    {
+        return $this->hasMany(Favorito::class, 'Codigo_Socio', 'Codigo_Socio');
+    }
 }

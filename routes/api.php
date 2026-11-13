@@ -30,6 +30,11 @@ Route::prefix('socio')->group(function () {
         Route::get('/multas', [SocioApiController::class, 'multas']);
         Route::post('/reservas', [SocioApiController::class, 'reservar']);
         Route::delete('/reservas/{reserva}', [SocioApiController::class, 'cancelarReserva']);
+
+        // Favoritos
+        Route::get('/favoritos', [SocioApiController::class, 'favoritos']);
+        Route::post('/favoritos', [SocioApiController::class, 'agregarFavorito']);
+        Route::delete('/favoritos/{isbn}', [SocioApiController::class, 'eliminarFavorito']);
     });
 });
 
