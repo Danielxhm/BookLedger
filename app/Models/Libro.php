@@ -53,5 +53,10 @@ class Libro extends Model
         return $this->hasMany(Ejemplar::class, 'Codigo_ISBN', 'Codigo_ISBN');
     }
 
+    public function favoritos()
+    {
+        return $this->hasMany(Favorito::class, 'Codigo_ISBN', 'Codigo_ISBN');
+    }
+
     
 }

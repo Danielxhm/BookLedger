@@ -11,6 +11,7 @@ use App\Notifications\NuevaReservaNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use App\Models\Favorito;
 
 class SocioApiController extends Controller
 {
@@ -236,4 +237,73 @@ class SocioApiController extends Controller
             'reserva' => $reserva,
         ]);
     }
+
+
+/**
+ * Obtener los libros favoritos del socio autenticado.
+ */
+    public function favoritos(Request $request)
+    {
+        $socio = $request->user();
+
+        $favoritos = $socio->favoritos()
+            ->with([
+                'libro.autores',
+                'libro.categoria',
+                'libro.editorial',
+            ])
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'favoritos' => $favoritos,
+        ]);
+    }
+
+    /**
+     * Agregar un libro a favoritos.
+     */
+    public function agregarFavorito(Request $request)
+    {
+        $socio = $request->user();
+
+        $request->validate([
+            'Codigo_ISBN' => 'required|exists:libros,Codigo_ISBN',
+        ]);
+
+        $favorito = Favorito::firstOrCreate([
+            'Codigo_Socio' => $socio->Codigo_Socio,
+            'Codigo_ISBN' => $request->Codigo_ISBN,
+        ]);
+
+        return response()->json([
+            'message' => $favorito->wasRecentlyCreated
+                ? 'Libro agregado a favoritos.'
+                : 'Este libro ya está en tus favoritos.',
+            'favorito' => $favorito,
+        ], $favorito->wasRecentlyCreated ? 201 : 200);
+    }
+
+    /**
+     * Eliminar un libro de favoritos.
+     */
+    public function eliminarFavorito(Request $request, string $isbn)
+    {
+        $socio = $request->user();
+
+        $eliminado = $socio->favoritos()
+            ->where('Codigo_ISBN', $isbn)
+            ->delete();
+
+        if (!$eliminado) {
+            return response()->json([
+                'message' => 'El libro no se encuentra en tus favoritos.',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Libro eliminado de favoritos.',
+        ]);
+    }
+
 }
